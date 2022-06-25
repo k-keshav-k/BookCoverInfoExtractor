@@ -1,6 +1,3 @@
-KESHAV KRISHNA
-2019CSB1224
-CS305
 =================================
 
 1. What does this program do
