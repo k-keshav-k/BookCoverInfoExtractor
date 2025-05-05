@@ -66,7 +66,9 @@ coverage report -m --omit=config-3.8.py
 
 
 ## Coverage:
-(ve3) keshav@keshav-Lenovo-ideapad:~/Desktop/SE_assign3$ coverage report -m --omit=config-3.8.py
+
+keshav@keshav-Lenovo-ideapad:~/Desktop/SE_assign3$ coverage report -m --omit=config-3.8.py
+
 Name                 Stmts   Miss  Cover   Missing
 --------------------------------------------------
 excel_sheet_add.py      16      0   100%
