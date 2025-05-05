@@ -1,40 +1,71 @@
-=================================
+# README
 
-1. What does this program do
-This program extracts meta data from different book covers.
-It accepts path of the images, along with whether it is a directory or not and then proceeds to find meta data about the image(s).
-It extracts following information from the book cover pages
--- Title of the book
--- Names of the authors
--- Publishers
--- ISBN numbers
+---
 
-The extracted information is then stored in an excel sheet.
+## 1. What does this program do
 
-2. A description of how this program works (i.e. its logic)
-First the program accepts the image path along with a flag denoting whetehr it is a directory or not.
-The image is converted to grayscale.
-It then uses an ocr library pytesseract to find all the text contained in the image.
-From data obtained from pytesseract, it finds title as the detected text with maximum box height.
-To find author and publisher, it uses a nlp library-- spacy to detect all entities in the image.
-The entities with label as "PRESON" are taken as authors and entities with label as "ORG" are taken as publisher.
-To find ISBN number, it searches the extracted text for keyword ISBN and then the string of digits and dashes after it are accepted as ISBN number.
+This program extracts metadata from book‑cover images. It accepts a path (file or directory) and then:
 
-3. How to compile and run this program
+- Runs OCR to detect all text on each cover.  
+- Identifies:
+  - **Title** (text box with the greatest height)  
+  - **Authors** (named entities labeled PERSON)  
+  - **Publishers** (named entities labeled ORG)  
+  - **ISBN numbers** (strings following the keyword “ISBN”)  
+- Writes the extracted information into an Excel sheet.
 
-To run the program :  python runner.py --image book2.png --isdir 0
-            where 
-                    string after --image is used to denote path of image/directory
-                    and 
-                    number after --isdir denotes whether the path is a directory or not, 0 denotes not a directory and 1 denotes a directory
+---
 
-To run the tests use: pytest test_executor.py -p no:warnings
+## 2. How it works (logic)
 
-To get coverage report use: coverage run -m --omit=config.py  pytest test_executor.py -p no:warnings
-                            coverage report -m --omit=config-3.8.py
+1. **Input**  
+   - Read command‑line flags:  
+     - `--image <path>` (file or directory)  
+     - `--isdir <0|1>` (0 = single image; 1 = process all images in directory)  
+
+2. **Preprocessing**  
+   - Convert each image to grayscale.
+
+3. **OCR**  
+   - Use `pytesseract` to extract all text boxes and their bounding‑box heights.
+
+4. **Title extraction**  
+   - Select the detected text with the maximum box height.
+
+5. **Entity recognition**  
+   - Use spaCy to detect named entities:  
+     - Label **PERSON** → Authors  
+     - Label **ORG** → Publishers  
+
+6. **ISBN extraction**  
+   - Search the OCR text for the keyword “ISBN”  
+   - Capture the subsequent sequence of digits and dashes.
+
+7. **Output**  
+   - Append one row per cover to an Excel file, with columns:  
+     `Title | Authors | Publishers | ISBN`
+
+---
+
+## 3. How to compile & run
+
+```bash
+# Run on a single image:
+python runner.py --image book2.png --isdir 0
+
+# Process all images in a directory:
+python runner.py --image path/to/dir --isdir 1
+
+# Run unit tests:
+pytest test_executor.py -p no:warnings
+
+# Generate coverage report:
+coverage run -m --omit=config.py pytest test_executor.py -p no:warnings
+coverage report -m --omit=config-3.8.py
+```
 
 
-Coverage:
+## Coverage:
 (ve3) keshav@keshav-Lenovo-ideapad:~/Desktop/SE_assign3$ coverage report -m --omit=config-3.8.py
 Name                 Stmts   Miss  Cover   Missing
 --------------------------------------------------
